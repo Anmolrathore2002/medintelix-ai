@@ -1,0 +1,4 @@
+venv
+__pycache__
+clinical_data.db
+uploads
