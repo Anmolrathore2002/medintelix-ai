@@ -1,5 +1,5 @@
 import sqlite3
-from datetime import datetime
+from datetime import datetime, timezone
 
 DB_NAME = "clinical_data.db"
 
@@ -29,10 +29,11 @@ def save_report(name, age, gender, values, analysis, risk_score, summary):
     cursor = conn.cursor()
 
     cursor.execute("""
-        INSERT INTO reports (timestamp, patient_name, age, gender, extracted, analysis, risk_score, summary)
+        INSERT INTO reports 
+        (timestamp, patient_name, age, gender, extracted, analysis, risk_score, summary)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     """, (
-        datetime.now().isoformat(),
+        datetime.now(timezone.utc).isoformat(),  # ✅ UTC
         name,
         age,
         gender,
@@ -50,8 +51,8 @@ def get_all_reports():
     cursor = conn.cursor()
 
     cursor.execute("""
-    SELECT id, timestamp, patient_name, age, gender, risk_score, summary
-    FROM reports ORDER BY id DESC
+        SELECT id, timestamp, patient_name, age, gender, risk_score, summary
+        FROM reports ORDER BY id DESC
     """)
 
     rows = cursor.fetchall()
